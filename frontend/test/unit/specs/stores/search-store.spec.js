@@ -441,7 +441,7 @@ describe("Search Store", () => {
             (key) => searchStore.filters[key].filter((f) => f.checked).length
           )
           .reduce((partialSum, count) => partialSum + count, 0)
-        expect(checkedFilterCount).toEqual(expectedFilterCount)
+        expect(checkedFilterCount).toEqual(expectedFilterCount + 2)
       }
     )
 

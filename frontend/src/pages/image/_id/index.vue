@@ -57,6 +57,24 @@
           <h1 class="description-bold md:heading-5 line-clamp-2">
             {{ image.title }}
           </h1>
+          <VButton
+            v-if="image.creator"
+            as="VLink"
+            :href="getLocalizedPath('creator', image.creator)"
+            variant="filled-gray"
+            size="medium"
+          >
+            {{ image.creator }}
+          </VButton>
+          <VButton
+            v-if="image.source"
+            as="VLink"
+            :href="getLocalizedPath('source', image.source || image.provider)"
+            variant="filled-gray"
+            size="medium"
+          >
+            {{ image.source || image.provider }}
+          </VButton>
           <i18n v-if="image.creator" path="imageDetails.creator" tag="span">
             <template #name>
               <VLink
@@ -144,6 +162,7 @@ export default defineComponent({
     const searchStore = useSearchStore()
 
     const route = useRoute()
+    const { app } = useContext()
 
     const image = ref<ImageDetail | null>(singleResultStore.image)
 
@@ -262,6 +281,13 @@ export default defineComponent({
       })
     }
 
+    const getLocalizedPath = (
+      collection: "creator" | "source",
+      value: string
+    ) => {
+      return app.localePath(`/${collection}/image/` + value)
+    }
+
     useMeta(createDetailPageMeta(image.value?.title, image.value?.url))
 
     return {
@@ -278,6 +304,7 @@ export default defineComponent({
       onImageError,
       handleRightClick,
       backToSearchPath,
+      getLocalizedPath,
 
       skipToContentTargetId,
 

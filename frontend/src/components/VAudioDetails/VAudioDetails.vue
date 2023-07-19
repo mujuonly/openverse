@@ -17,10 +17,9 @@
           <VMediaTag
             v-for="(tag, index) in audio.tags.filter((i) => !!i)"
             :key="index"
-            tag="li"
-          >
-            {{ tag.name }}
-          </VMediaTag>
+            :name="tag.name"
+            media-type="audio"
+          />
         </ul>
         <dl v-if="audio">
           <div v-if="audio.audio_set">

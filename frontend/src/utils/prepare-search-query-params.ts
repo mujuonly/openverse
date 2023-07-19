@@ -19,7 +19,16 @@ export default function prepareSearchQueryParams(
   // and params.searchBy will equal "creator"
   // params value after this if block:
   // { q: undefined, creator: "John", searchBy: "creator" }
+  console.log(
+    "[prepare-search-query-params] searchBy",
+    params.searchBy,
+    params.q
+  )
   if (params.searchBy && params.searchBy.length > 0) {
+    if (params.searchBy === "tag") {
+      params.searchBy = "tags"
+      params.tags = params.q
+    }
     params[params.searchBy] = params.q
     delete params.q
   }

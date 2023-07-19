@@ -49,6 +49,8 @@ export const isSearchTypeSupported = (
   return supportedSearchTypes.includes(st as SupportedSearchType)
 }
 
+export type SearchBy = "tag" | "source" | "creator" | "title"
+
 export interface SearchState {
   searchType: SearchType
   recentSearches: Ref<string[]>
@@ -355,6 +357,22 @@ export const useSearchStore = defineStore("search", {
       return this.filters[filterType][idx].checked
     },
 
+    setFilter({
+      filterType,
+      codeIdx,
+      code,
+      value = true,
+    }: {
+      filterType: FilterCategory
+      codeIdx?: number
+      code?: string
+      value?: boolean
+    }) {
+      const filterItems = this.filters[filterType]
+      const idx = codeIdx ?? filterItems.findIndex((f) => f.code === code)
+      this.filters[filterType][idx].checked = value
+    },
+
     /**
      * Resets all filters to initial values.
      * Provider filters are not in the initial filters, so they need to be
@@ -388,6 +406,9 @@ export const useSearchStore = defineStore("search", {
           )
         }
       })
+    },
+    setSearchBy(searchBy: SearchBy) {
+      this.setFilter({ filterType: "searchBy", code: searchBy, value: true })
     },
     /**
      * Replaces filters with the newFilterData object that was created using initial filters,

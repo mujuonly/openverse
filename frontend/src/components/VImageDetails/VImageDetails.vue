@@ -6,10 +6,13 @@
       </h2>
       <VContentReportPopover :media="image" />
     </div>
-    <ul v-if="image && image.tags" class="mb-6 flex flex-wrap gap-2">
-      <VMediaTag v-for="(tag, index) in filteredTags" :key="index" tag="li">{{
-        tag.name
-      }}</VMediaTag>
+    <ul v-if="image && image.tags" class="mb-6 flex flex-row flex-wrap gap-2">
+      <VMediaTag
+        v-for="(tag, index) in filteredTags"
+        :key="index"
+        :name="tag.name"
+        media-type="image"
+      />
     </ul>
     <dl>
       <div>

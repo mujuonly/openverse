@@ -17,6 +17,8 @@ import { deepClone } from "~/utils/clone"
 import type { Context } from "@nuxt/types"
 import type { Dictionary } from "vue-router/types/router"
 
+export type ViewType = "search" | "tag" | "creator" | "source"
+
 export interface ApiQueryParams {
   q?: string
   license?: string
@@ -103,6 +105,32 @@ export const filtersToQueryData = (
     }
     return query
   }, {} as ApiQueryFilters)
+}
+
+/**
+ * Extract search type from the url. Returns the last part
+ * of the path after `/search/`, or `all` by default.
+ * `/search/`: all
+ * `/search/image`: image
+ * @param queryString - the query path string from the url
+ */
+export const pathToSearchType = (
+  queryString: string
+): { searchType: SearchType; viewType: ViewType | ""; q?: string } => {
+  const searchTypePattern = new RegExp(
+    `/(search|tag|creator|source)/(${mediaTypes.join("|")})`
+  )
+  const match = queryString.match(searchTypePattern)
+  const searchTypePath = match === null ? "" : match[2]
+  const searchType = match === null ? ALL_MEDIA : (match[2] as SearchType)
+  const viewType = match === null ? "" : (match[1] as ViewType)
+  let q = ""
+  if (["tag", "creator", "source"].includes(viewType)) {
+    const lastPart = queryString.split(`/${viewType}/${searchTypePath}`)[1]
+    q = lastPart.split("/")[1]
+    console.log("The q should be: ", lastPart, q)
+  }
+  return { searchType, viewType, q }
 }
 
 /**

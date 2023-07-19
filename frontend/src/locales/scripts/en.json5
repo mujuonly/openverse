@@ -759,4 +759,10 @@
     },
     creator: "Creator",
   },
+  additionalSearchViews: {
+    links: {
+      source: "Open source page",
+      creator: "Creator page",
+    },
+  },
 }

@@ -1,32 +1,49 @@
 <template>
-  <Component
-    :is="tag"
-    v-bind="$attrs"
-    class="caption-bold md:description-bold inline-flex rounded-full bg-dark-charcoal-10 px-3 py-1 text-dark-blue md:px-4 md:py-2"
-  >
-    <!-- @slot Content goes here -->
-    <slot />
-  </Component>
+  <li>
+    <VButton
+      as="VLink"
+      size="small"
+      variant="filled-gray"
+      class="label-bold"
+      :href="href"
+    >
+      {{ name }}
+    </VButton>
+  </li>
 </template>
 
 <script lang="ts">
 /**
- * Displays a tag associated with a media item. If set up as a link, it can be
+ * Displays a tag associated with a media item. Set up as a link, it can be
  * used as a link to find other items that are similarly tagged.
  */
-import { defineComponent } from "vue"
+import { defineComponent, PropType } from "vue"
+import { useContext } from "@nuxtjs/composition-api"
+
+import type { SupportedMediaType } from "~/constants/media"
 
 export default defineComponent({
-  name: "MediaTag",
+  name: "VMediaTag",
   props: {
-    /**
-     * the HTML tag or Vue component to use as the root node; A non-interactive
-     * span will be rendered unless specified otherwise.
-     */
-    tag: {
+    name: {
       type: String,
-      default: "span",
+      required: true,
     },
+    mediaType: {
+      type: String as PropType<SupportedMediaType>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const { app } = useContext()
+
+    const href = app.localePath({
+      path: `/tag/${props.mediaType}/${props.name}`,
+    })
+
+    return {
+      href,
+    }
   },
 })
 </script>
