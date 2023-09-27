@@ -1,4 +1,5 @@
 from typing import Literal
+from uuid import UUID
 
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
@@ -132,10 +133,17 @@ class OembedRequestSerializer(serializers.Serializer):
         identifier = url.rsplit("/", 1)[1]
 
         try:
-            image = Image.objects.get(identifier=identifier)
+            uuid = UUID(identifier)
+        except ValueError:
+            raise serializers.ValidationError(
+                {"Could not parse identifier from URL.": data["url"]}
+            )
+
+        try:
+            image = Image.objects.get(identifier=uuid)
         except (Image.DoesNotExist, ValidationError):
             raise serializers.ValidationError(
-                {"Could not find image from the provided url": data["url"]}
+                {"Could not find image from the provided URL": data["url"]}
             )
 
         data["image"] = image
