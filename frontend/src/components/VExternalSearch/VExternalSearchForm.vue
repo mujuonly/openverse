@@ -90,14 +90,6 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    isSupported: {
-      type: Boolean,
-      default: false,
-    },
-    hasNoResults: {
-      type: Boolean,
-      default: true,
-    },
   },
   emits: {
     tab: defineEvent<[KeyboardEvent]>(),

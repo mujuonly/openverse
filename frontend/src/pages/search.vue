@@ -25,12 +25,7 @@
         :supported="supported"
         data-testid="search-results"
       />
-      <VExternalSearchForm
-        v-if="!isAllView"
-        :search-term="searchTerm"
-        :is-supported="supported"
-        :has-no-results="false"
-      />
+      <VExternalSearchForm v-if="!isAllView" :search-term="searchTerm" />
       <VScrollButton
         v-show="showScrollButton"
         :is-filter-sidebar-visible="isSidebarVisible"
