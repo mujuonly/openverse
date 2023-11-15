@@ -3,6 +3,7 @@ from django.core.cache import cache
 import pytest
 
 from api.controllers import search_controller
+from api.controllers.search_controller import DEFAULT_SQS_FLAGS
 
 
 pytestmark = pytest.mark.django_db
@@ -62,6 +63,7 @@ def test_create_search_query_q_search_no_filters(media_type_config):
                     "default_operator": "AND",
                     "fields": ["title", "description", "tags.name"],
                     "query": "cat",
+                    "flags": DEFAULT_SQS_FLAGS,
                 }
             }
         ],
@@ -71,6 +73,7 @@ def test_create_search_query_q_search_no_filters(media_type_config):
                     "boost": 10000,
                     "fields": ["title"],
                     "query": "cat",
+                    "flags": DEFAULT_SQS_FLAGS,
                 }
             },
             {"rank_feature": {"boost": 10000, "field": "standardized_popularity"}},
@@ -95,6 +98,7 @@ def test_create_search_query_q_search_with_quotes_adds_exact_suffix(media_type_c
                     "fields": ["title", "description", "tags.name"],
                     "query": '"The cutest cat"',
                     "quote_field_suffix": ".exact",
+                    "flags": DEFAULT_SQS_FLAGS,
                 }
             }
         ],
@@ -104,6 +108,7 @@ def test_create_search_query_q_search_with_quotes_adds_exact_suffix(media_type_c
                     "boost": 10000,
                     "fields": ["title"],
                     "query": "The cutest cat",
+                    "flags": DEFAULT_SQS_FLAGS,
                 }
             },
             {"rank_feature": {"boost": 10000, "field": "standardized_popularity"}},
@@ -143,6 +148,7 @@ def test_create_search_query_q_search_with_filters(image_media_type_config):
                     "default_operator": "AND",
                     "fields": ["title", "description", "tags.name"],
                     "query": "cat",
+                    "flags": DEFAULT_SQS_FLAGS,
                 }
             }
         ],
@@ -152,6 +158,7 @@ def test_create_search_query_q_search_with_filters(image_media_type_config):
                     "boost": 10000,
                     "fields": ["title"],
                     "query": "cat",
+                    "flags": DEFAULT_SQS_FLAGS,
                 }
             },
             {"rank_feature": {"boost": 10000, "field": "standardized_popularity"}},
@@ -179,10 +186,23 @@ def test_create_search_query_non_q_query(image_media_type_config):
                 "simple_query_string": {
                     "fields": ["creator"],
                     "query": "Artist From Openverse",
+                    "flags": DEFAULT_SQS_FLAGS,
                 }
             },
-            {"simple_query_string": {"fields": ["title"], "query": "kitten🐱"}},
-            {"simple_query_string": {"fields": ["tags.name"], "query": "cute"}},
+            {
+                "simple_query_string": {
+                    "fields": ["title"],
+                    "query": "kitten🐱",
+                    "flags": DEFAULT_SQS_FLAGS,
+                }
+            },
+            {
+                "simple_query_string": {
+                    "fields": ["tags.name"],
+                    "query": "cute",
+                    "flags": DEFAULT_SQS_FLAGS,
+                }
+            },
         ],
         "should": [
             {"rank_feature": {"boost": 10000, "field": "standardized_popularity"}},
