@@ -42,6 +42,7 @@ PROVIDER = "provider"
 QUERY_SPECIAL_CHARACTER_ERROR = "Unescaped special characters are not allowed."
 DEFAULT_BOOST = 10000
 DEFAULT_SEARCH_FIELDS = ["title", "description", "tags.name"]
+DEFAULT_SQS_FLAGS = "AND|NOT|PHRASE|WHITESPACE"
 
 
 def _quote_escape(query_string):
@@ -265,6 +266,7 @@ def create_search_query(
         query = _quote_escape(search_params.data["q"])
         base_query_kwargs = {
             "query": query,
+            "flags": DEFAULT_SQS_FLAGS,
             "fields": DEFAULT_SEARCH_FIELDS,
             "default_operator": "AND",
         }
@@ -277,6 +279,7 @@ def create_search_query(
         quotes_stripped = query.replace('"', "")
         exact_match_boost = Q(
             "simple_query_string",
+            flags=DEFAULT_SQS_FLAGS,
             fields=["title"],
             query=f"{quotes_stripped}",
             boost=10000,
@@ -292,6 +295,7 @@ def create_search_query(
                 search_queries["must"].append(
                     Q(
                         "simple_query_string",
+                        flags=DEFAULT_SQS_FLAGS,
                         query=_quote_escape(field_value),
                         fields=[field_name],
                     )
